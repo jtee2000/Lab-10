@@ -1,6 +1,11 @@
 const margin = { top: 20, left: 50, right: 20, bottom: 20 };
 const width = 600 - margin.left - margin.right;
-const height = 450 - margin.top - margin.bottom;
+const height = 400 - margin.top - margin.bottom;
+
+
+let data;
+let reverse = false;
+let type = d3.select('#group-by').node().value;
 
 const svg = d3
   .select(".chart")
@@ -24,12 +29,22 @@ svg.append('g')
 svg.append('g')
   .attr('class', 'axis y-axis');
 
+svg.append("text")
+    .attr("class", "y-axis-title")
+    .attr("text-anchor", "middle")
+    .attr('font-size', '12px')
+    .attr("y", -10)
+    .attr("x", 0);
 
-function update(data){
-  const type = d3.select('#group-by').node().value;
+function update(data, type, reverse){
+  
   console.log('type', type);
 
   data.sort((a, b)=>b[type] - a[type]);  
+  
+  if (reverse){
+    data.reverse();
+  }
   
   xScale.domain(data.map(d=>d.company));
   
@@ -37,8 +52,6 @@ function update(data){
   
   
   yScale.domain([0, d3.max(data,d=>d[type])]);
-  
-  
   
  
   const bars = svg.selectAll('.bar')
@@ -64,21 +77,36 @@ function update(data){
   const xAxis = d3.axisBottom(xScale);
   
   svg.select('.x-axis')
+    .transition()
+    .duration(1000)
     .call(xAxis);
   
   const yAxis = d3.axisLeft(yScale);
   
   svg.select('.y-axis')
+    .transition()
+    .duration(1000)
     .call(yAxis);
+  
+  d3.select('.y-axis-title').text(type==="stores"? "Stores" : "Billion USD")
 }
 
-let data;
+
 d3.csv("coffee-house-chains.csv", d3.autoType).then(_data => {
   data = _data;
-  update(data);
+  
+  update(data, type, reverse);
+  
 });
 
 
 d3.select('#group-by').on('change', (event)=>{
-  update(data);
+  type = d3.select('#group-by').node().value;
+  update(data, type, reverse);
+})
+
+d3.select('#sort-btn').on('click', (event)=>{
+  console.log('sort button clicked');
+  reverse = !reverse;
+  update(data, type, reverse);
 })
