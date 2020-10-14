@@ -1,4 +1,4 @@
-const margin = { top: 20, left: 20, right: 20, bottom: 20 };
+const margin = { top: 20, left: 50, right: 20, bottom: 20 };
 const width = 600 - margin.left - margin.right;
 const height = 450 - margin.top - margin.bottom;
 
@@ -23,9 +23,10 @@ svg.append('g')
 
 svg.append('g')
   .attr('class', 'axis y-axis');
-    
+
+
 function update(data){
-  const type = d3.select('#group-by').node().value;
+  
   
 
   data.sort((a, b)=>b[type] - a[type]);  
@@ -56,11 +57,19 @@ function update(data){
   svg.select('.x-axis')
     .call(xAxis);
   
-  const yAxis = d3.axisBottom(yScale);
+  const yAxis = d3.axisLeft(yScale);
   
   svg.select('.y-axis')
     .call(yAxis);
 }
-d3.csv("coffee-house-chains.csv", d3.autoType).then(data => {
-  update(data);
+
+let data;
+d3.csv("coffee-house-chains.csv", d3.autoType).then(_data => {
+  data = _data;
+  update(_data);
 });
+
+
+d3.select('#group-by').on('change', (event)=>{
+  update(data);
+})
