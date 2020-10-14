@@ -17,30 +17,49 @@ const xScale = d3
 
 const yScale = d3.scaleLinear().range([height, 0]);
 
+svg.append('g')
+  .attr('class', 'axis x-axis')
+  .attr("transform", "translate(0," + height + ")");
 
+svg.append('g')
+  .attr('class', 'axis y-axis');
+    
 function update(data){
-  const bars = svg.selectAll('.bar')
-    .data(data);
+  const type = d3.select('#group-by').node().value;
+  
+
+  data.sort((a, b)=>b[type] - a[type]);  
   
   xScale.domain(data.map(d=>d.company));
   
-  const groupBy = d3.select('#group-by').node().value;
+  console.log(data);
   
-  const value = (type)=> type==='stores'?d.stores:d.revenue;
   
-  yScale.domain([0,d3.max(data,d=>groupBy==='stores'?d.stores:d.revenue)]);
+  yScale.domain([0,d3.max(data,d=>d[type])]);
   
-  console.log('groupBy', groupBy);
+ 
+  const bars = svg.selectAll('.bar')
+    .data(data, d=>d.company);
   
   bars.enter()
     .append('rect')
     .attr('fill', '#1f76b4')
+    .merge(bars)
     .attr('x', d=>xScale(d.company))
-    .attr('y', d=>yScale(groupBy==='stores'?d.stores:d.revenue))
+    .attr('y', d=>yScale(d[type]))
     .attr('width', d=>xScale.bandwidth())
-    .attr('height', d=>height-yScale(groupBy==='stores'?d.stores:d.revenue))
-    
+    .attr('height', d=>height-yScale(d[type]))
   
+  
+  const xAxis = d3.axisBottom(xScale);
+  
+  svg.select('.x-axis')
+    .call(xAxis);
+  
+  const yAxis = d3.axisBottom(yScale);
+  
+  svg.select('.y-axis')
+    .call(yAxis);
 }
 d3.csv("coffee-house-chains.csv", d3.autoType).then(data => {
   update(data);
