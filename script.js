@@ -73,6 +73,7 @@ function update(data, type, reverse){
     .attr('y', d=>yScale(d[type]))
     .attr('height', d=>height-yScale(d[type]))
   
+  bars.exit().remove();
   
   const xAxis = d3.axisBottom(xScale);
   
