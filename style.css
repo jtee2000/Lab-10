@@ -15,8 +15,7 @@ h1 {
   display:flex;
 }
 .column label {
-  
-  
+  padding-top:5px;
 }
 .column select{
   width:70%!important;
