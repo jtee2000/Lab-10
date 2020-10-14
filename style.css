@@ -11,13 +11,14 @@ h1 {
 }
 
 
-#group-by{
-  display:flex!important;
-}
-.row{
+.column:first-child{
   display:flex;
 }
-
-p{
-  font-weight:bold;
+.column label {
+  
+  
+}
+.column select{
+  width:70%!important;
+  margin-left:20px;
 }
