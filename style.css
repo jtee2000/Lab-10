@@ -10,6 +10,9 @@ h1 {
   color: #373fff;
 }
 
-#group-by{
-  display:inline-block;
-}
+/* .dropdown{
+  display:flex!important;
+} */
+/* .dropdown select{
+  margin-left:20px!important;
+} */
