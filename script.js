@@ -26,17 +26,19 @@ svg.append('g')
 
 
 function update(data){
-  
-  
+  const type = d3.select('#group-by').node().value;
+  console.log('type', type);
 
   data.sort((a, b)=>b[type] - a[type]);  
   
   xScale.domain(data.map(d=>d.company));
   
-  console.log(data);
+  console.log(xScale.domain())
   
   
-  yScale.domain([0,d3.max(data,d=>d[type])]);
+  yScale.domain([0, d3.max(data,d=>d[type])]);
+  
+  
   
  
   const bars = svg.selectAll('.bar')
@@ -44,11 +46,18 @@ function update(data){
   
   bars.enter()
     .append('rect')
+    .attr('class', 'bar')
     .attr('fill', '#1f76b4')
+    .attr('x', d=>xScale(d.company))
+    .attr('width', d=>xScale.bandwidth())
+  	.attr("height",0)
+	  .attr("y",height)
     .merge(bars)
+    .transition()
+    .delay((d,i)=>i*100)
+    .duration(1000)
     .attr('x', d=>xScale(d.company))
     .attr('y', d=>yScale(d[type]))
-    .attr('width', d=>xScale.bandwidth())
     .attr('height', d=>height-yScale(d[type]))
   
   
@@ -66,7 +75,7 @@ function update(data){
 let data;
 d3.csv("coffee-house-chains.csv", d3.autoType).then(_data => {
   data = _data;
-  update(_data);
+  update(data);
 });
 
 
