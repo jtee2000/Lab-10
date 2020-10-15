@@ -38,7 +38,7 @@ svg.append("text")
 
 function update(data, type, reverse){
   
-  console.log('type', type);
+  console.log('data', data);
 
   data.sort((a, b)=>b[type] - a[type]);  
   
