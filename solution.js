@@ -90,6 +90,48 @@ function update(data, type, reverse){
     .call(yAxis);
   
   d3.select('.y-axis-title').text(type==="stores"? "Stores" : "Billion USD")
+
+  const chart = d3
+    .select(".chart")
+    .select("svg")
+    .attr("role", "graphics-document")
+    .attr("aria-roledescription", "bar chart")
+  chart.attr("tabindex", 0);
+  chart.attr(
+    "aria-label",
+    type === "stores" ? 
+    "Bar chart showing number of stores of famous coffee chains worldwide"
+    :
+    "Bar chart showing total revenue of famous coffee chains worldwide"
+  );
+
+  chart.select("#title").remove();
+    
+  chart.attr("aria-labelledby", "title");
+  chart
+    .insert("title", ":first-child") // needs to be the first element
+    .attr("id", "title")
+    .text(
+      type === "stores" ? 
+    "Bar chart showing number of stores of famous coffee chains worldwide"
+    :
+    "Bar chart showing total revenue of famous coffee chains worldwide"
+    );
+
+  svg.selectAll(".bar")
+      .attr("role", "graphics-symbol")
+      .attr("aria-roledescription", "bar element")
+      .attr("tabindex", 0) 
+      .attr("aria-label", d => {
+        return type === "stores"
+          ? `${d.company}: Number of stores ${d.stores}`
+          : `${d.company}: Total Revenue ${d.revenue} billion U.S. dollars`;
+      })
+  svg.select('.axis')
+     .attr("aria-hidden", true)
+  d3.select(".button")
+    .attr("role", "graphics-document")
+    .attr("aria-roledescription", "bar chart")
 }
 
 
